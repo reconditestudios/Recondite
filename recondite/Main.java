@@ -11,6 +11,7 @@ public class Main {
     static Boolean playerAlive = true;
     static String[] commandList = new String[1];
     static String command;
+    static Boolean
     
     private static void player(){
         int coordX = 0;
@@ -24,6 +25,7 @@ public class Main {
         while(playerAlive) {
             
             //Inform Player of monsters/treasure/exits
+        	
             System.out.println("");
             
             //Request Player command.
