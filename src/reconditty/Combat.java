@@ -10,11 +10,9 @@ import java.util.Arrays;
 
 public class Combat {
 	public boolean playerAlive = true;
-	public int monstersAlive = 0;
+	public static int monstersAlive = 0;
 	public Goblin goblin;
 	public Monster[] monsters = {goblin};
-	public String[] commandList = {"attack", "defend", "spell"};
-	public String command;
 	static BufferedReader reader;
 	
 	/**
