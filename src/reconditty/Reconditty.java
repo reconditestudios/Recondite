@@ -9,16 +9,21 @@ package reconditty;
  * @author Zane-Gareth
  */
 public class Reconditty {
-    public Player herp;
+    public static Player theDude;
+    public static World hyrule;
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Reconditty derp = new Reconditty();
-        derp.start();
+        Reconditty game = new Reconditty();
+        game.start();
+        hyrule = new World();
+        theDude = new Player();
+        Combat fight = new Combat();
+        fight.startFight();
     }
-    
+
     public static void start() {
-        
     }
 }

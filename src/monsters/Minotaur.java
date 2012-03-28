@@ -28,6 +28,9 @@ public class Minotaur implements Monster {
         currentAC = baseAC;
     }
 
+    public void turn() {
+    }
+
     /**
      * "Rolls" a random number from 1-20, adds any attack modifier,
      * and tests to see if the result is higher than the target AC.
@@ -38,11 +41,11 @@ public class Minotaur implements Monster {
     public void attack() {
         int attack = (random.nextInt(20) + 1) + attackModifier;
 
-        if (attack > Player.currentAC) {
-            Player.getHurt(damage);
+        if (attack > Combat.player.currentAC) {
+            Combat.player.getHurt(damage);
             System.out.println("The minotaur hit and dealt " + damage + " damage.");
 
-            if (Player.isDead() == true) {
+            if (Combat.player.isDead() == true) {
                 System.out.println("You die.");
                 Combat.playerAlive = false;
             }

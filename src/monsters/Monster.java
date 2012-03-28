@@ -9,9 +9,11 @@ package monsters;
  * @author Zane-Gareth
  */
 public interface Monster {
-    
+
     public int currentHealth = 0;
     public int currentAC = 0;
+
+    public void turn();
 
     public void attack();
 

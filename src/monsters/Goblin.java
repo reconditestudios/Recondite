@@ -4,70 +4,75 @@
  */
 package monsters;
 
-import java.util.Random;
 import reconditty.Combat;
 import reconditty.Player;
+import java.util.Random;
+import java.lang.*;
 
 /**
  *
  * @author Zane-Gareth
  */
 public class Goblin implements Monster {
-	//Placeholder values for now.
-	public int maxHealth = 10;
-	public int speed = 2;
-	public int damage = 2;
-	public int baseAC = 10;
-	public int attackModifier = 1;
+    //Local variables.//
+    Random random = new Random();
+    //Stats. Placeholder values for now.//
+    public int maxHealth = 10;
+    public int speed = 2;
+    public int damage = 2;
+    public int baseAC = 10;
+    public int attackModifier = 1;
+    public int currentHealth;
+    public int currentAC;
 
-	public int currentHealth = 10;
-	public int currentAC = 10;
+    public Goblin() {
+        currentHealth = maxHealth;
+        currentAC = baseAC;
+    }
 
-        Random random = new Random();
+    public void turn() {
+        attack();
+    }
 
-	public Goblin() {
-	}
+    /**
+     * "Rolls" a random number from 1-20, adds any attack modifier,
+     * and tests to see if the result is higher than the target AC.
+     * If it is, deals damage.
+     * Also checks to see if the player is killed, in which case it
+     * informs the player.
+     */
+    public void attack() {
+        int attack = (random.nextInt(20) + 1) + attackModifier;
 
-	/**
-	 * "Rolls" a random number from 1-20, adds any attack modifier,
-	 * and tests to see if the result is higher than the target AC.
-	 * If it is, deals damage.
-	 * Also checks to see if the player is killed, in which case it
-	 * informs the player.
-	 */
-	public void attack() {
-		int attack = (random.nextInt(20) + 1) + attackModifier;
-		System.out.println(attack);
+        if (attack > Combat.player.currentAC) {
+            Combat.player.getHurt(damage);
+            System.out.println("The goblin hit and dealt " + damage + " points of damage.");
 
-		if (attack > Player.currentAC) {
-			Player.getHurt(damage);
-			System.out.println("The goblin hit and dealt " + damage + " points of damage.");
-			
-			if (Player.isDead() == true) {
-				System.out.println("You die.");
-				Combat.playerAlive = false;
-			}
-		} else {
-			System.out.println("The goblin missed.");
-		}
-	}
+            if (Combat.player.isDead() == true) {
+                System.out.println("You die.");
+                Combat.playerAlive = false;
+            }
+        } else {
+            System.out.println("The goblin missed.");
+        }
+    }
 
-	/**
-	 * Hurts the goblin by a given amount.
-	 * @param Damage to be dealt.
-	 */
-	public void getHurt(int incomingDamage) {
-		currentHealth -= incomingDamage;
-	}
+    /**
+     * Hurts the goblin by a given amount.
+     * @param Damage to be dealt.
+     */
+    public void getHurt(int incomingDamage) {
+        currentHealth -= incomingDamage;
+    }
 
-	/**
-	 * Checks if the goblin's health has dropped below 0.
-	 */
-	public Boolean isDead() {
-		Boolean isDead = false;
-		if (currentHealth < 0) {
-			isDead = true;
-		}
-		return isDead;
-	}
+    /**
+     * Checks if the goblin's health has dropped below 0.
+     */
+    public Boolean isDead() {
+        Boolean isDead = false;
+        if (currentHealth < 0) {
+            isDead = true;
+        }
+        return isDead;
+    }
 }
