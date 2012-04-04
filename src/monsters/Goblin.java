@@ -4,8 +4,7 @@
  */
 package monsters;
 
-import reconditty.Combat;
-import reconditty.Player;
+import reconditty.*;
 import java.util.Random;
 import java.lang.*;
 
@@ -14,6 +13,7 @@ import java.lang.*;
  * @author Zane-Gareth
  */
 public class Goblin implements Monster {
+
     //Local variables.//
     Random random = new Random();
     //Stats. Placeholder values for now.//
@@ -24,6 +24,8 @@ public class Goblin implements Monster {
     public int attackModifier = 1;
     public int currentHealth;
     public int currentAC;
+    
+    public int index;
 
     public Goblin() {
         currentHealth = maxHealth;
@@ -44,13 +46,12 @@ public class Goblin implements Monster {
     public void attack() {
         int attack = (random.nextInt(20) + 1) + attackModifier;
 
-        if (attack > Combat.player.currentAC) {
-            Combat.player.getHurt(damage);
+        if (attack > World.player.currentAC) {
+            World.player.getHurt(damage);
             System.out.println("The goblin hit and dealt " + damage + " points of damage.");
 
-            if (Combat.player.isDead() == true) {
-                System.out.println("You die.");
-                Combat.playerAlive = false;
+            if (World.player.isDead() == true) {
+                World.player.die();
             }
         } else {
             System.out.println("The goblin missed.");
@@ -74,5 +75,10 @@ public class Goblin implements Monster {
             isDead = true;
         }
         return isDead;
+    }
+    
+    public void die() {
+        World.monsters[index] = null;
+        System.out.println("The goblin dies.");
     }
 }

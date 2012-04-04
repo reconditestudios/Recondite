@@ -12,6 +12,7 @@ public interface Monster {
 
     public int currentHealth = 0;
     public int currentAC = 0;
+    public int index = 0;
 
     public void turn();
 
@@ -20,4 +21,6 @@ public interface Monster {
     public void getHurt(int damage);
 
     public Boolean isDead();
+
+    public void die();
 }

@@ -41,13 +41,12 @@ public class Minotaur implements Monster {
     public void attack() {
         int attack = (random.nextInt(20) + 1) + attackModifier;
 
-        if (attack > Combat.player.currentAC) {
-            Combat.player.getHurt(damage);
+        if (attack > World.player.currentAC) {
+            World.player.getHurt(damage);
             System.out.println("The minotaur hit and dealt " + damage + " damage.");
 
-            if (Combat.player.isDead() == true) {
-                System.out.println("You die.");
-                Combat.playerAlive = false;
+            if (World.player.isDead() == true) {
+                World.player.die();
             }
         } else {
             System.out.println("The minotaur missed.");

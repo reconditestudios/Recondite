@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1">
+        <file>
+            <url>src/reconditty/World.java</url>
+            <line>54</line>
+        </file>
+        <file>
+            <url>src/reconditty/Player.java</url>
+            <line>63</line>
+            <line>92</line>
+        </file>
+    </editor-bookmarks>
 </project-private>

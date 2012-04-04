@@ -9,8 +9,9 @@ package reconditty;
  * @author Zane-Gareth
  */
 public class Reconditty {
-    public static Player theDude;
-    public static World hyrule;
+
+    static boolean playerAlive;
+    public static World world;
 
     /**
      * @param args the command line arguments
@@ -18,12 +19,14 @@ public class Reconditty {
     public static void main(String[] args) {
         Reconditty game = new Reconditty();
         game.start();
-        hyrule = new World();
-        theDude = new Player();
-        Combat fight = new Combat();
-        fight.startFight();
     }
 
-    public static void start() {
+    public void start() {
+        world = new World();
+        playerAlive = true;
+        while (playerAlive) {
+            world.player.turn();
+            //world.enemyTurn();
+        }
     }
 }
