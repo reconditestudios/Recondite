@@ -24,7 +24,7 @@ public class Player {
     public int maxMana = 5;
     public int damage = 3;
     public int baseAC = 12;
-    public int attackModifier = 2;
+    public int attackModifier = 5;
     public int turnsSinceGuard;
     public int currentAC;
     public int currentHealth;
@@ -64,8 +64,11 @@ public class Player {
             restartTurn = true;
             turn();
         } else if (command.equals("spawn")) {
-            currentRoom.addMonster(new Goblin());
+            Goblin goblin = new Goblin(World.monsters.size(), currentRoom.monsters.size(), currentRoom);
+            World.monsters.add(goblin);
+            currentRoom.monsters.add(goblin);
             System.out.println("A goblin appears! \n");
+            
             restartTurn = true;
             turn();
         } else if (command.equals("end")) {

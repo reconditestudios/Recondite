@@ -20,7 +20,9 @@ public class World {
     public World() {
         firstRoom = new Room();
         player = new Player(firstRoom);
-        monsters.add(new Goblin());
+        Goblin goblin = new Goblin(0,0,firstRoom);
+        monsters.add(goblin);
+        firstRoom.monsters.add(goblin);
     }
 
     public static void enemyTurn() {

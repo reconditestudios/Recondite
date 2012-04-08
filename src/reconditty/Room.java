@@ -26,12 +26,4 @@ public class Room {
         Monster[] monsters = {};
         return monsters;
     }
-
-    /**
-     * Make a given number of monsters.
-     */
-    public void addMonster(Goblin newGoblin) {
-        newGoblin.index = monsters.size();
-        monsters.add(newGoblin);
-    }
 }

@@ -10,6 +10,14 @@ package monsters;
  */
 public abstract class Monster {
 
+    public int worldIndex;
+    public int roomIndex;
+    
+    public Monster(int wIndex, int rIndex) {
+        worldIndex = wIndex;
+        roomIndex = rIndex;
+    }
+
     public abstract void turn();
 
     public abstract void attack();

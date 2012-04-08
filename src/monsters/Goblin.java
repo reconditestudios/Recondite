@@ -24,10 +24,13 @@ public class Goblin extends Monster {
     public int damage = 2;
     public int currentHealth;
     
-    public int index;
+    public int worldIndex;
+    public int roomIndex;
 
-    public Goblin() {
+    public Goblin(int wIndex, int rIndex, Room room) {
+        super(wIndex,rIndex);
         currentHealth = maxHealth;
+        currentRoom = room;
     }
 
     public void turn() {
@@ -93,7 +96,14 @@ public class Goblin extends Monster {
     }
     
     public void die() {
-        World.monsters.remove(index);
+        World.monsters.remove(worldIndex);
+        currentRoom.monsters.remove(roomIndex);
+        for (int i = worldIndex; i < World.monsters.size(); i++) {
+            ((Monster)World.monsters.get(i)).worldIndex--;
+        }
+        for (int i = roomIndex; i < currentRoom.monsters.size(); i++) {
+            ((Monster)currentRoom.monsters.get(i)).roomIndex--;
+        }
         System.out.println("The goblin dies.");
         if (World.monsters.size() == 0) {
             Reconditty.gameRunning = false;
