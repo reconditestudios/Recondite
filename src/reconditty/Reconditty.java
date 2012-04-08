@@ -10,7 +10,8 @@ package reconditty;
  */
 public class Reconditty {
 
-    static boolean playerAlive;
+    public static boolean gameRunning;
+    public static boolean playerAlive;
     public static World world;
 
     /**
@@ -22,11 +23,15 @@ public class Reconditty {
     }
 
     public void start() {
+        gameRunning = true;
         world = new World();
         playerAlive = true;
-        while (playerAlive) {
+        while (playerAlive && gameRunning) {
             world.player.turn();
-            //world.enemyTurn();
+            if (gameRunning) {      //quits game more cleanly
+                world.enemyTurn();
+            }
+            System.out.println(""); //for spacing
         }
     }
 }

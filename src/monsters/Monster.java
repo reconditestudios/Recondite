@@ -8,19 +8,21 @@ package monsters;
  *
  * @author Zane-Gareth
  */
-public interface Monster {
+public abstract class Monster {
+    
+    public int currentAC;
+    
+    public Monster(int baseAC) {
+        currentAC = baseAC;
+    }
 
-    public int currentHealth = 0;
-    public int currentAC = 0;
-    public int index = 0;
+    public abstract void turn();
 
-    public void turn();
+    public abstract void attack();
 
-    public void attack();
+    public abstract void getHurt(int damage);
 
-    public void getHurt(int damage);
+    public abstract Boolean isDead();
 
-    public Boolean isDead();
-
-    public void die();
+    public abstract void die();
 }

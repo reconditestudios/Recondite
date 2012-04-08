@@ -12,27 +12,32 @@ import monsters.*;
 public class Player {
 
     //Internal Variables//
-    String[] commandList = {"attack", "defend", "spell"};
-    Random random = new Random();
+    //TODO: Add shortenings of all the commands. Help = h, etc.
+    private String[] commandList = {"spawn", "help", "attack", "defend", "cast", "wait", "health", "end"};
+    private String[] shortCommands = {"a", "d", "c", "w", "h",};
+    private Random random = new Random();
+    private BufferedReader reader;
+    private boolean restartTurn = false;
     private boolean guarding;
-    BufferedReader reader;
-    Room currentRoom;
+    public Room currentRoom;
     //Stats. All placeholder values for now.//
-    public int maxHealth = 100;
-    public int maxMana = 100;
+    public int maxHealth = 10;
+    public int maxMana = 5;
     public int speed = 10;
-    public int damage = 10;
+    public int damage = 3;
     public int baseAC = 12;
-    public int attackModifier = 3;
+    public int attackModifier = 2;
     public int turnsSinceGuard;
     public int currentAC;
-    int currentHealth;
-    int currentMana;
+    public int currentHealth;
+    public int currentMana;
+    public int currentDamage;
 
     /**************************************/
     public Player() {
         turnsSinceGuard = 0;
         currentHealth = maxHealth;
+        currentDamage = damage;
         currentMana = maxMana;
         currentAC = baseAC;
     }
@@ -48,26 +53,41 @@ public class Player {
     }
 
     public void turn() {
+        restartTurn = false;
         //Get a command from the player.
         String command = getCommand();
 
         //Translate the command into a method call.
-        if (command.equals("attack")) {
-            attack(World.monsters[0]);
-        } else if (command.equals("defend")) {
-            defend();
-        } else if (command.equals("cast")) {
-            castSpell();
-        } else if (command.equals("help")) {
+        if (command.equals("help")) {
             help();
+            restartTurn = true;
+        } else if (command.equals("attack") || command.equals("a")) {
+            attack();
+        } else if (command.equals("defend") || command.equals("d")) {
+            defend();
+        } else if (command.equals("cast") || command.equals("c")) {
+            castSpell();
+        } else if (command.equals("wait") || command.equals("w")) {
+            // do nothing
+        } else if (command.equals("health") || command.equals("h")) {
+            System.out.println(currentHealth + "\n");
+            restartTurn = true;
+            turn();
+        } else if (command.equals("spawn")) {
+            World.addMonster(new Goblin(13));
+        } else if (command.equals("end")) {
+            Reconditty.gameRunning = false;
         }
         //TODO: Add more player commands.
 
-        if (guarding && turnsSinceGuard > 1) {
-            currentAC -= 5;
-            guarding = false;
+        //Deals with defending timing out.
+        if (!restartTurn) {
+            if (guarding && turnsSinceGuard > 1) {
+                currentAC -= 5;
+                guarding = false;
+            }
+            turnsSinceGuard++;
         }
-        turnsSinceGuard++;
     }
 
     /* "Rolls" a random number from 1-20, adds any attack modifier,
@@ -75,30 +95,26 @@ public class Player {
      * If it is, deals damage.
      * @param Target.
      */
-    private void attack(Monster target) {
-        if (World.monsters.length > 0) {
-            int roll = (random.nextInt(20) + 1) + attackModifier;
+    private void attack() {
+        try {
+            Monster target = (Monster) World.monsters.get(0);
+            int roll = (random.nextInt(20) + 1); //roll to hit
 
-            if (roll > target.currentAC || roll == 20) {
+            //if it hits, deal damage
+            if (roll + attackModifier >= target.currentAC || roll == 20) {
                 //Critical Strike//
                 if (roll == 20) {
                     damage *= 2;
                 }
-
-                target.getHurt(damage);
                 System.out.println("You hit and deal " + damage + " points of damage.");
-
-                if (target.isDead() == true) {
-                    target.die();
-                    //TODO: Add a way to remove dead monsters from the list.
-                }
+                target.getHurt(damage);
             } else {
                 System.out.println("You miss.");
             }
             if (roll == 20) {
                 damage /= 2;
             }
-        } else {
+        } catch (IndexOutOfBoundsException dex) {
             System.out.println("There is nothing to attack.");
         }
     }
@@ -116,10 +132,15 @@ public class Player {
         for (int i = 0; i < commandList.length; i++) {
             System.out.println(commandList[i]);
         }
+        turn();
     }
 
     private void castSpell() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        if (currentMana >= 2) {
+            Monster target = (Monster) World.monsters.get(0);
+            target.getHurt(2);
+            System.out.println("You deal 2 damage.");
+        }
     }
 
     /* Hurts the player by a given amount.
@@ -132,11 +153,10 @@ public class Player {
     /* Checks if the player's health has dropped below 0.
      */
     public Boolean isDead() {
-        Boolean isDead = false;
-        if (currentHealth < 0) {
-            isDead = true;
+        if (currentHealth <= 0) {
+            return true;
         }
-        return isDead;
+        return false;
     }
 
     /* Deals with player death.
@@ -161,10 +181,11 @@ public class Player {
                 System.out.println("An input error occurred.");
             }
 
-            if (Arrays.asList(commandList).contains(command)) {
+            if (Arrays.asList(commandList).contains(command)
+                    || Arrays.asList(shortCommands).contains(command)) {
                 commanded = true;
             } else {
-                System.out.println("Type 'help' to see a list of valid commands.");
+                System.out.println("Type 'help' to see a list of valid commands. \n");
             }
         }
 

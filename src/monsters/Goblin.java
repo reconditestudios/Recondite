@@ -12,24 +12,23 @@ import java.lang.*;
  *
  * @author Zane-Gareth
  */
-public class Goblin implements Monster {
+public class Goblin extends Monster {
 
     //Local variables.//
-    Random random = new Random();
+    private Random random = new Random();
     //Stats. Placeholder values for now.//
-    public int maxHealth = 10;
-    public int speed = 2;
-    public int damage = 2;
-    public int baseAC = 10;
     public int attackModifier = 1;
-    public int currentHealth;
-    public int currentAC;
+    public int currentHealth = 15;
+    public int maxHealth = 10;
+    public int baseAC = 13;
+    public int damage = 2;
+    public int speed = 2;
     
     public int index;
 
-    public Goblin() {
+    public Goblin(int baseAC) {
+        super(baseAC);
         currentHealth = maxHealth;
-        currentAC = baseAC;
     }
 
     public void turn() {
@@ -64,6 +63,9 @@ public class Goblin implements Monster {
      */
     public void getHurt(int incomingDamage) {
         currentHealth -= incomingDamage;
+        if (currentHealth <= 0) {
+            die();
+        }
     }
 
     /**
@@ -78,7 +80,10 @@ public class Goblin implements Monster {
     }
     
     public void die() {
-        World.monsters[index] = null;
+        World.monsters.remove(index);
         System.out.println("The goblin dies.");
+        if (World.monsters.size() == 0) {
+            Reconditty.gameRunning = false;
+        }
     }
 }
