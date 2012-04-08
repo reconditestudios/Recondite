@@ -15,29 +15,19 @@ public class World {
 
     public static ArrayList monsters = new ArrayList();
     public static Player player;
-    Room firstRoom;
+    public Room firstRoom;
 
     public World() {
         firstRoom = new Room();
-        player = new Player();
-        player.currentRoom = firstRoom;
-        monsters.add(new Goblin(13));
-    }
-
-    public static void genAdjRooms(Room curRoom) {
+        player = new Player(firstRoom);
+        monsters.add(new Goblin());
     }
 
     public static void enemyTurn() {
-        for (int i=0; i < monsters.size(); i++) {
-            ((Monster)monsters.get(i)).turn();
+        if (Reconditty.gameRunning) {      //quits game more cleanly
+            for (int i = 0; i < monsters.size(); i++) {
+                ((Monster) monsters.get(i)).turn();
+            }
         }
-    }
-
-    /**
-     * Make a given number of monsters.
-     */
-    public static void addMonster(Goblin newGoblin) {
-        newGoblin.index = monsters.size();
-        monsters.add(newGoblin);
     }
 }

@@ -14,20 +14,19 @@ import java.lang.*;
  */
 public class Goblin extends Monster {
 
-    //Local variables.//
     private Random random = new Random();
+    public Room currentRoom;
+    
     //Stats. Placeholder values for now.//
     public int attackModifier = 1;
-    public int currentHealth = 15;
+    public int armorClass = 13;
     public int maxHealth = 10;
-    public int baseAC = 13;
     public int damage = 2;
-    public int speed = 2;
+    public int currentHealth;
     
     public int index;
 
-    public Goblin(int baseAC) {
-        super(baseAC);
+    public Goblin() {
         currentHealth = maxHealth;
     }
 
@@ -55,6 +54,20 @@ public class Goblin extends Monster {
         } else {
             System.out.println("The goblin missed.");
         }
+    }
+    
+    public void getAttacked(int attackRoll, int damage, boolean criticalHit) {
+        //if it hits, deal damage
+            if (attackRoll >= armorClass || attackRoll == 20) {
+                //Critical Strike//
+                if (criticalHit) {
+                    damage *= 2;
+                }
+                System.out.println("You hit and deal " + damage + " points of damage.");
+                getHurt(damage);
+            } else {
+                System.out.println("You miss.");
+            }
     }
 
     /**

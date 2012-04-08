@@ -9,12 +9,6 @@ package monsters;
  * @author Zane-Gareth
  */
 public abstract class Monster {
-    
-    public int currentAC;
-    
-    public Monster(int baseAC) {
-        currentAC = baseAC;
-    }
 
     public abstract void turn();
 
@@ -25,4 +19,7 @@ public abstract class Monster {
     public abstract Boolean isDead();
 
     public abstract void die();
+
+    public void getAttacked(int roll, int damage, boolean criticalHit) {
+    }
 }

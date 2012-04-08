@@ -12,9 +12,8 @@ import monsters.*;
 public class Player {
 
     //Internal Variables//
-    //TODO: Add shortenings of all the commands. Help = h, etc.
-    private String[] commandList = {"spawn", "help", "attack", "defend", "cast", "wait", "health", "end"};
-    private String[] shortCommands = {"a", "d", "c", "w", "h",};
+    private String[] commandList = {"spawn", "help", "attack", "defend", "cast", "wait", "health", "quit", "go"};
+    private String[] shortCommands = {"a", "d", "c", "w", "h", "q", "g"};
     private Random random = new Random();
     private BufferedReader reader;
     private boolean restartTurn = false;
@@ -23,7 +22,6 @@ public class Player {
     //Stats. All placeholder values for now.//
     public int maxHealth = 10;
     public int maxMana = 5;
-    public int speed = 10;
     public int damage = 3;
     public int baseAC = 12;
     public int attackModifier = 2;
@@ -31,25 +29,13 @@ public class Player {
     public int currentAC;
     public int currentHealth;
     public int currentMana;
-    public int currentDamage;
 
-    /**************************************/
-    public Player() {
+    public Player(Room firstRoom) {
+        currentRoom = firstRoom;
         turnsSinceGuard = 0;
         currentHealth = maxHealth;
-        currentDamage = damage;
         currentMana = maxMana;
         currentAC = baseAC;
-    }
-
-    /* Levels up the player character; increases his stats.
-     */
-    public void levelUp() {
-        //Placeholder values for now.
-        maxHealth += 10;
-        maxMana += 10;
-        speed += 1;
-        damage += 1;
     }
 
     public void turn() {
@@ -61,6 +47,10 @@ public class Player {
         if (command.equals("help")) {
             help();
             restartTurn = true;
+        } else if (command.equals("go") || command.equals("g")) {
+            go();       //TODO: Add go.
+        } else if (command.equals("look") || command.equals("l")) {
+            look();     //TODO: Add look.
         } else if (command.equals("attack") || command.equals("a")) {
             attack();
         } else if (command.equals("defend") || command.equals("d")) {
@@ -74,11 +64,13 @@ public class Player {
             restartTurn = true;
             turn();
         } else if (command.equals("spawn")) {
-            World.addMonster(new Goblin(13));
+            currentRoom.addMonster(new Goblin());
+            System.out.println("A goblin appears! \n");
+            restartTurn = true;
+            turn();
         } else if (command.equals("end")) {
             Reconditty.gameRunning = false;
         }
-        //TODO: Add more player commands.
 
         //Deals with defending timing out.
         if (!restartTurn) {
@@ -99,21 +91,14 @@ public class Player {
         try {
             Monster target = (Monster) World.monsters.get(0);
             int roll = (random.nextInt(20) + 1); //roll to hit
-
-            //if it hits, deal damage
-            if (roll + attackModifier >= target.currentAC || roll == 20) {
-                //Critical Strike//
-                if (roll == 20) {
-                    damage *= 2;
-                }
-                System.out.println("You hit and deal " + damage + " points of damage.");
-                target.getHurt(damage);
-            } else {
-                System.out.println("You miss.");
+            boolean crit = (roll == 20); //if a 20 is rolled, it's a crit
+            
+            int tempDamage = damage;
+            if (crit) { //If it's a crit, double damage is dealt
+                tempDamage = 2 * damage;
             }
-            if (roll == 20) {
-                damage /= 2;
-            }
+            target.getAttacked(roll + attackModifier, tempDamage, crit);
+            
         } catch (IndexOutOfBoundsException dex) {
             System.out.println("There is nothing to attack.");
         }
@@ -190,5 +175,13 @@ public class Player {
         }
 
         return command;
+    }
+
+    private void go() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    private void look() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

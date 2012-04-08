@@ -28,9 +28,7 @@ public class Reconditty {
         playerAlive = true;
         while (playerAlive && gameRunning) {
             world.player.turn();
-            if (gameRunning) {      //quits game more cleanly
-                world.enemyTurn();
-            }
+            world.enemyTurn();
             System.out.println(""); //for spacing
         }
     }
