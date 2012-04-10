@@ -18,11 +18,11 @@ public class World {
     public Room firstRoom;
 
     public World() {
-        firstRoom = new Room();
+        firstRoom = new Room(null);
+        firstRoom.genAdjRooms();
+        firstRoom.addMonster("goblin");
         player = new Player(firstRoom);
-        Goblin goblin = new Goblin(0,0,firstRoom);
-        monsters.add(goblin);
-        firstRoom.monsters.add(goblin);
+        System.out.println("There are " + firstRoom.monsters.size() + " goblins here.");
     }
 
     public static void enemyTurn() {

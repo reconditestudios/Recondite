@@ -34,7 +34,11 @@ public class Goblin extends Monster {
     }
 
     public void turn() {
+        if (World.player.currentRoom.equals(currentRoom)) {
         attack();
+        } else {
+            go(currentRoom.adjacentRooms[0]);
+        } // TODO: Make target room semi-random.
     }
 
     /**
@@ -96,17 +100,34 @@ public class Goblin extends Monster {
     }
     
     public void die() {
+        //get rid of the monster
         World.monsters.remove(worldIndex);
         currentRoom.monsters.remove(roomIndex);
+        
+        //change other monsters' indexes accordingly
         for (int i = worldIndex; i < World.monsters.size(); i++) {
             ((Monster)World.monsters.get(i)).worldIndex--;
         }
         for (int i = roomIndex; i < currentRoom.monsters.size(); i++) {
             ((Monster)currentRoom.monsters.get(i)).roomIndex--;
         }
+        
         System.out.println("The goblin dies.");
-        if (World.monsters.size() == 0) {
-            Reconditty.gameRunning = false;
+    }
+
+    private void go(Room room) {
+        //leave the current room
+        currentRoom.monsters.remove(roomIndex);
+        for (int i = roomIndex; i < currentRoom.monsters.size(); i++) {
+            ((Monster) currentRoom.monsters.get(i)).roomIndex--;
+        }
+        
+        //enter the target room
+        room.monsters.add(this);
+        currentRoom = room;
+        if (World.player.currentRoom.equals(currentRoom)) {
+            System.out.println("A goblin enters.");
+            //TODO: Tell player where the goblin enters from.
         }
     }
 }

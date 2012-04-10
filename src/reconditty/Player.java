@@ -12,8 +12,8 @@ import monsters.*;
 public class Player {
 
     //Internal Variables//
-    private String[] commandList = {"spawn", "help", "attack", "defend", "cast", "wait", "health", "quit", "go"};
-    private String[] shortCommands = {"a", "d", "c", "w", "h", "q", "g"};
+    private String[] commandList = {"spawn", "help", "attack", "defend", "cast", "wait", "health", "quit", "go north", "go west", "go east", "look"};
+    private String[] shortCommands = {"a", "d", "c", "w", "h", "q", "g n", "g w", "g e", "l"};
     private Random random = new Random();
     private BufferedReader reader;
     private boolean restartTurn = false;
@@ -42,17 +42,64 @@ public class Player {
         restartTurn = false;
         //Get a command from the player.
         String command = getCommand();
+        doTheThing(command);
 
+        //Deals with defending timing out.
+        if (!restartTurn) {
+            if (guarding && turnsSinceGuard > 1) {
+                currentAC -= 5;
+                guarding = false;
+            }
+            turnsSinceGuard++;
+        }
+    }
+
+    private String getCommand() {
+        String command = "";
+        //Set up reader to take input, specify that we haven't received a command.
+        reader = new BufferedReader(new InputStreamReader(System.in));
+        Boolean commanded = false;
+
+        //Take a player command.
+        while (commanded == false) {
+            System.out.println("What do you do? ");
+            try {
+                command = reader.readLine();
+            } catch (IOException IOE) {
+                System.out.println("An input error occurred.");
+            }
+
+            if (Arrays.asList(commandList).contains(command)
+                    || Arrays.asList(shortCommands).contains(command)) {
+                commanded = true;
+            } else {
+                System.out.println("Type 'help' to see a list of valid commands. \n");
+            }
+        }
+
+        return command;
+    }
+
+    private void doTheThing(String command) {
+        
+        System.out.println(""); // for spacing
+        
         //Translate the command into a method call.
         if (command.equals("help")) {
             help();
             restartTurn = true;
-        } else if (command.equals("go") || command.equals("g")) {
-            go();       //TODO: Add go.
+        } else if (command.equals("go north") || command.equals("g n")) {
+            go(currentRoom.adjacentRooms[0]);
+        } else if (command.equals("go east") || command.equals("g e")) {
+            go(currentRoom.adjacentRooms[1]);
+        } else if (command.equals("go west") || command.equals("g w")) {
+            go(currentRoom.adjacentRooms[2]);
         } else if (command.equals("look") || command.equals("l")) {
-            look();     //TODO: Add look.
+            look();
+            restartTurn = true;
+            turn();
         } else if (command.equals("attack") || command.equals("a")) {
-            attack();
+            attack();   //TODO: Implement target choosing.
         } else if (command.equals("defend") || command.equals("d")) {
             defend();
         } else if (command.equals("cast") || command.equals("c")) {
@@ -64,24 +111,13 @@ public class Player {
             restartTurn = true;
             turn();
         } else if (command.equals("spawn")) {
-            Goblin goblin = new Goblin(World.monsters.size(), currentRoom.monsters.size(), currentRoom);
-            World.monsters.add(goblin);
-            currentRoom.monsters.add(goblin);
+            currentRoom.addMonster("goblin");
             System.out.println("A goblin appears! \n");
-            
+            //TODO: Implement a method to spawn different monster types.
             restartTurn = true;
             turn();
         } else if (command.equals("end")) {
             Reconditty.gameRunning = false;
-        }
-
-        //Deals with defending timing out.
-        if (!restartTurn) {
-            if (guarding && turnsSinceGuard > 1) {
-                currentAC -= 5;
-                guarding = false;
-            }
-            turnsSinceGuard++;
         }
     }
 
@@ -154,37 +190,17 @@ public class Player {
         Reconditty.playerAlive = false;
     }
 
-    private String getCommand() {
-        String command = "";
-        //Set up reader to take input, specify that we haven't received a command.
-        reader = new BufferedReader(new InputStreamReader(System.in));
-        Boolean commanded = false;
-
-        //Take a player command.
-        while (commanded == false) {
-            System.out.println("What do you do? ");
-            try {
-                command = reader.readLine();
-            } catch (IOException IOE) {
-                System.out.println("An input error occurred.");
-            }
-
-            if (Arrays.asList(commandList).contains(command)
-                    || Arrays.asList(shortCommands).contains(command)) {
-                commanded = true;
-            } else {
-                System.out.println("Type 'help' to see a list of valid commands. \n");
-            }
-        }
-
-        return command;
-    }
-
-    private void go() {
-        throw new UnsupportedOperationException("Not yet implemented");
+    private void go(Room targetRoom) {
+        targetRoom.genAdjRooms();
+        currentRoom = targetRoom;
+        System.out.println("You enter the room.");
+        System.out.println("There are " + currentRoom.monsters.size() + " goblins here.");
+        //TODO: Add code to set up the room.
     }
 
     private void look() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        System.out.println("There are " + currentRoom.monsters.size() + " goblins here.");
+        System.out.println("Exits are west, north, and east.");
+        //TODO: Change this when random room exits are added.
     }
 }
