@@ -4,8 +4,9 @@
  */
 package reconditty;
 
+import actors.Player;
 import java.util.*;
-import monsters.*;
+import actors.*;
 
 /**
  *
@@ -15,7 +16,7 @@ public class World {
 
     public static ArrayList monsters = new ArrayList();
     public static Player player;
-    public Room firstRoom;
+    public static Room firstRoom;
 
     public World() {
         firstRoom = new Room(null);

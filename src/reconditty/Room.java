@@ -5,32 +5,34 @@
 package reconditty;
 
 import java.util.ArrayList;
-import monsters.*;
+import java.util.Random;
+import actors.*;
 
 /**
  *
  * @author Zane-Gareth
  */
 public class Room {
-
     public ArrayList monsters = new ArrayList();
-    public Room[] adjacentRooms = new Room[3];
+    private Random random = new Random();
+    public Room[] adjRooms;
     public boolean entered;
-
+    
     public Room(Room parentRoom) {
-        adjacentRooms[2] = parentRoom;
+        //Decide how many adjacent rooms there are (1 to 3)
+        int exits = random.nextInt(3) + 1;
+        adjRooms = new Room[exits];
+        //The 'parent room' will always be the last room in the list.
+        adjRooms[adjRooms.length - 1] = (parentRoom);
         entered = false;
     }
-
+    
     public void genAdjRooms() {
-        adjacentRooms = new Room[3];
-        Room room1 = new Room(this);
-        Room room2 = new Room(this);
-        adjacentRooms[0] = room1;
-        adjacentRooms[1] = room2;
-        //TODO: Add element of randomness in number of adjacent rooms.
+        for (int i = 0; i < adjRooms.length-1; i++) {
+            adjRooms[i] = new Room(this);
+        }
     }
-
+    
     public void addMonster(String monsterType) {
         Monster monster = null;
         if (monsterType.equals("goblin")) {
