@@ -9,6 +9,8 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.Random;
 import actors.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import reconditty.Reconditty;
 import reconditty.Room;
 import reconditty.World;
@@ -16,8 +18,8 @@ import reconditty.World;
 public class Player {
 
     //Internal Variables//
-    private String[] commandList = {"spawn", "help", "attack", "defend", "cast", "wait", "health", "quit", "go north", "go west", "go east", "look"};
-    private String[] shortCommands = {"a", "d", "c", "w", "h", "q", "g n", "g w", "g e", "l"};
+    private String[] commandList = {"spawn", "help", "attack", "defend", "cast", "wait", "health", "go", "look", "exits", "quit"};
+    private String[] shortCommands = {"a", "d", "c", "w", "h", "q", "g", "l", "e"};
     private Random random = new Random();
     private BufferedReader reader;
     private boolean restartTurn = false;
@@ -93,16 +95,8 @@ public class Player {
         if (command.equals("help")) {
             help();
             restartTurn = true;
-        } else if (command.equals("go north") || command.equals("g n")) {
-            go(currentRoom.adjRooms[0]);
-        } else if (command.equals("go east") || command.equals("g e")) {
-            go(currentRoom.adjRooms[1]);
-        } else if (command.equals("go west") || command.equals("g w")) {
-            if (currentRoom.equals(World.firstRoom)) {
-                System.out.println("There is no exit to the west.");
-            } else {
-                go(currentRoom.adjRooms[2]); //TODO: Implement better directional system.   
-            }
+        } else if (command.equals("go") || command.equals("g")) {
+            goHandler();
         } else if (command.equals("look") || command.equals("l")) {
             look();
             restartTurn = true;
@@ -125,7 +119,11 @@ public class Player {
             //TODO: Implement a method to spawn different monster types.
             restartTurn = true;
             turn();
-        } else if (command.equals("end")) {
+        } else if (command.equals("exits") || command.equals("e")) {
+            System.out.println("There are " + currentRoom.adjRooms.length + " exits.");
+            restartTurn = true;
+            turn();
+        } else if (command.equals("quit")) {
             Reconditty.gameRunning = false;
         }
     }
@@ -199,12 +197,39 @@ public class Player {
         Reconditty.playerAlive = false;
     }
 
+    /* Requests an exit number from the player.
+     * If the number is too big, reminds player of the number of exits.
+     * Else sends the player through the target exit.
+     */
+    private void goHandler() {
+        int destination = getGo();
+        if (destination <= currentRoom.adjRooms.length) {
+            go(currentRoom.adjRooms[destination - 1]);
+        } else { //handles the case of the target room index being too big
+            System.out.println("There are only " + currentRoom.adjRooms.length + " exits.");
+            restartTurn = true;
+            turn();
+        }
+    }
+
+    private int getGo() {
+        System.out.println("To which room?");
+        int destination = 9001;
+        try {
+            destination = Integer.parseInt(reader.readLine());
+        } catch (IOException ex) {
+            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+            destination = 0;
+        }
+        return destination;
+    }
+
     private void go(Room targetRoom) {
         targetRoom.genAdjRooms();
         currentRoom = targetRoom;
         System.out.println("You enter the room.");
         System.out.println("There are " + currentRoom.monsters.size() + " monsters here.");
-        //TODO: Add code to set up the room.
+        //TODO: Add code to generate room contents.
     }
 
     private void look() {
