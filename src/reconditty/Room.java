@@ -20,8 +20,7 @@ public class Room {
     
     public Room(Room parentRoom) {
         //Decide how many adjacent rooms there are (1 to 3)
-        //int exits = random.nextInt(3) + 1;
-        int exits = 3;
+        int exits = random.nextInt(3) + 1;
         adjRooms = new Room[exits];
         //The 'parent room' will always be the last room in the list.
         adjRooms[adjRooms.length - 1] = (parentRoom);
