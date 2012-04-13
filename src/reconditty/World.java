@@ -27,8 +27,11 @@ public class World {
     }
 
     public static void enemyTurn() {
-        if (Reconditty.gameRunning) {      //quits game more cleanly
+        if (Reconditty.gameRunning && Reconditty.playerAlive) {
             for (int i = 0; i < monsters.size(); i++) {
+                if (!Reconditty.gameRunning || !Reconditty.playerAlive) {
+                    break; //ends game more cleanly if player is dead etc.
+                }
                 ((Monster) monsters.get(i)).turn();
             }
         }

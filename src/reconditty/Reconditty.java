@@ -27,8 +27,8 @@ public class Reconditty {
         world = new World();
         playerAlive = true;
         while (playerAlive && gameRunning) {
-            world.player.turn();
-            world.enemyTurn();
+            World.player.turn();    //run player's turn
+            World.enemyTurn();      //for each enemy, run their turn
             System.out.println(""); //for spacing
         }
     }

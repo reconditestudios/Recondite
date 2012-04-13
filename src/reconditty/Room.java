@@ -43,11 +43,15 @@ public class Room {
         monsters.add(monster);
     }
 
+    /* If the player has been here before, tells him.
+     * Else, sets up the room and generates adjacent rooms.
+     */
     public void getEntered() {
         if (enteredByPlayer) {
             System.out.println("This room looks familiar.");
         } else {
             this.genAdjRooms();
+            //TODO: Set up contents of room
             enteredByPlayer = true;
         }
     }

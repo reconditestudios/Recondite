@@ -113,10 +113,6 @@ public class Player {
             //TODO: Implement a method to spawn different monster types.
             restartTurn = true;
             turn();
-        } else if (command.equals("exits") || command.equals("e")) {
-            System.out.println("There are " + currentRoom.adjRooms.length + " exits.");
-            restartTurn = true;
-            turn();
         } else if (command.equals("quit")) {
             Reconditty.gameRunning = false;
         }
@@ -197,9 +193,12 @@ public class Player {
      */
     private void goHandler() {
         int destination = getGo();
-        if (destination <= currentRoom.adjRooms.length) {
+
+        try {
             go(currentRoom.adjRooms[destination - 1]);
-        } else { //handles the case of the target room index being too big
+        } catch (NullPointerException ex) {
+            System.out.println("There are only " + currentRoom.adjRooms.length + " exits.");
+        } catch (ArrayIndexOutOfBoundsException ex) {
             System.out.println("There are only " + currentRoom.adjRooms.length + " exits.");
             restartTurn = true;
             turn();
@@ -228,7 +227,10 @@ public class Player {
 
     private void look() {
         System.out.println("There are " + currentRoom.monsters.size() + " monsters here.");
-        //TODO: Add room exits to look().
-        System.out.println(currentRoom.adjRooms);
+        if (currentRoom.equals(World.firstRoom)) {
+            System.out.println("There are " + (currentRoom.adjRooms.length - 1) + " exits here.");
+        } else {
+            System.out.println("There are " + currentRoom.adjRooms.length + " exits here.");
+        }
     }
 }
