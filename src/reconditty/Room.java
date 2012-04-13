@@ -13,26 +13,27 @@ import actors.*;
  * @author Zane-Gareth
  */
 public class Room {
+
     public ArrayList monsters = new ArrayList();
     private Random random = new Random();
     public Room[] adjRooms;
-    public boolean entered;
-    
+    public boolean enteredByPlayer;
+
     public Room(Room parentRoom) {
         //Decide how many adjacent rooms there are (1 to 3)
         int exits = random.nextInt(3) + 1;
         adjRooms = new Room[exits];
         //The 'parent room' will always be the last room in the list.
         adjRooms[adjRooms.length - 1] = (parentRoom);
-        entered = false;
+        enteredByPlayer = false;
     }
-    
+
     public void genAdjRooms() {
-        for (int i = 0; i < adjRooms.length-1; i++) {
+        for (int i = 0; i < adjRooms.length - 1; i++) {
             adjRooms[i] = new Room(this);
         }
     }
-    
+
     public void addMonster(String monsterType) {
         Monster monster = null;
         if (monsterType.equals("goblin")) {
@@ -40,5 +41,14 @@ public class Room {
         }
         World.monsters.add(monster);
         monsters.add(monster);
+    }
+
+    public void getEntered() {
+        if (enteredByPlayer) {
+            System.out.println("This room looks familiar.");
+        } else {
+            this.genAdjRooms();
+            enteredByPlayer = true;
+        }
     }
 }

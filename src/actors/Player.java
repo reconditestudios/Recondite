@@ -4,16 +4,10 @@
  */
 package actors;
 
-import actors.Item;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Random;
-import actors.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import reconditty.Reconditty;
-import reconditty.Room;
-import reconditty.World;
+import java.util.*;
+import java.util.logging.*;
+import reconditty.*;
 
 public class Player {
 
@@ -225,9 +219,9 @@ public class Player {
     }
 
     private void go(Room targetRoom) {
-        targetRoom.genAdjRooms();
         currentRoom = targetRoom;
         System.out.println("You enter the room.");
+        targetRoom.getEntered();
         System.out.println("There are " + currentRoom.monsters.size() + " monsters here.");
         //TODO: Add code to generate room contents.
     }

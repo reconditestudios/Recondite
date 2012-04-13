@@ -20,8 +20,8 @@ public class World {
 
     public World() {
         firstRoom = new Room(null);
-        firstRoom.genAdjRooms();
         firstRoom.addMonster("goblin");
+        firstRoom.getEntered();
         player = new Player(firstRoom);
         System.out.println("There are " + firstRoom.monsters.size() + " goblins here.");
     }
