@@ -19,9 +19,14 @@ public class Room {
     public Room[] adjRooms;
     public boolean enteredByPlayer;
 
-    public Room(Room parentRoom) {
+    public Room(Room parentRoom, boolean isFirstRoom) {
         //Decide how many adjacent rooms there are (1 to 3)
-        int exits = random.nextInt(3) + 1;
+        int exits;
+        if (isFirstRoom) {
+            exits = random.nextInt(2) + 2;
+        } else {
+            exits = random.nextInt(3) + 1;
+        }
         adjRooms = new Room[exits];
         //The 'parent room' will always be the last room in the list.
         adjRooms[adjRooms.length - 1] = (parentRoom);
@@ -30,7 +35,7 @@ public class Room {
 
     public void genAdjRooms() {
         for (int i = 0; i < adjRooms.length - 1; i++) {
-            adjRooms[i] = new Room(this);
+            adjRooms[i] = new Room(this, false);
         }
     }
 

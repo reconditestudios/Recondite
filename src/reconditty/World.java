@@ -19,7 +19,7 @@ public class World {
     public static Room firstRoom;
 
     public World() {
-        firstRoom = new Room(null);
+        firstRoom = new Room(null,true);
         firstRoom.addMonster("goblin");
         firstRoom.getEntered();
         player = new Player(firstRoom);
