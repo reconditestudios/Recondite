@@ -113,12 +113,12 @@ public class Goblin extends Monster {
 
     public void die() {
         //get rid of the monster
-        World.monsters.remove(worldIndex);
+        World.activeMonsters().remove(worldIndex);
         curRoom.monsters.remove(roomIndex);
 
         //change other monsters' indexes accordingly
-        for (int i = worldIndex; i < World.monsters.size(); i++) {
-            ((Monster) World.monsters.get(i)).worldIndex--;
+        for (int i = worldIndex; i < World.activeMonsters().size(); i++) {
+            ((Monster) World.activeMonsters().get(i)).worldIndex--;
         }
         for (int i = roomIndex; i < curRoom.monsters.size(); i++) {
             ((Monster) curRoom.monsters.get(i)).roomIndex--;

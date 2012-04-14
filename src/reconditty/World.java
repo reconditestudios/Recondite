@@ -14,26 +14,32 @@ import actors.*;
  */
 public class World {
 
-    public static ArrayList monsters = new ArrayList();
+    public static ArrayList floors = new ArrayList();
     public static Player player;
-    public static Room firstRoom;
 
     public World() {
-        firstRoom = new Room(null,true);
-        firstRoom.addMonster("goblin");
-        firstRoom.getEntered();
-        player = new Player(firstRoom);
-        System.out.println("There are " + firstRoom.monsters.size() + " goblins here.");
+        floors.add(new Floor());
+        player = new Player(getFirstRoom());
+        getFirstRoom().addMonster("goblin");
+        player.go(getFirstRoom());
     }
 
     public static void enemyTurn() {
         if (Reconditty.gameRunning && Reconditty.playerAlive) {
-            for (int i = 0; i < monsters.size(); i++) {
+            for (int i = 0; i < activeMonsters().size(); i++) {
                 if (!Reconditty.gameRunning || !Reconditty.playerAlive) {
                     break; //ends game more cleanly if player is dead etc.
                 }
-                ((Monster) monsters.get(i)).turn();
+                ((Monster) activeMonsters().get(i)).turn();
             }
         }
+    }
+    
+    public static ArrayList activeMonsters() {
+        return player.currentFloor.monsters;
+    }
+    
+    public static Room getFirstRoom() {
+        return ((Floor) floors.get(0)).firstRoom;
     }
 }

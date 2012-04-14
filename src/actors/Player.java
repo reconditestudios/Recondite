@@ -18,6 +18,7 @@ public class Player {
     private BufferedReader reader;
     private boolean restartTurn = false;
     private boolean guarding;
+    public Floor currentFloor;
     public Room currentRoom;
     //Stats. All placeholder values for now.//
     public Item[] inventory = {};
@@ -32,6 +33,7 @@ public class Player {
     public int currentMana;
 
     public Player(Room firstRoom) {
+        currentFloor = (Floor) World.floors.get(0);
         currentRoom = firstRoom;
         turnsSinceGuard = 0;
         currentHealth = maxHealth;
@@ -125,7 +127,7 @@ public class Player {
      */
     private void attack() {
         try {
-            Monster target = (Monster) World.monsters.get(0);
+            Monster target = (Monster) World.activeMonsters().get(0);
             int roll = (random.nextInt(20) + 1); //roll to hit
             boolean crit = (roll == 20); //if a 20 is rolled, it's a crit
 
@@ -158,7 +160,7 @@ public class Player {
 
     private void castSpell() {
         if (currentMana >= 2) {
-            Monster target = (Monster) World.monsters.get(0);
+            Monster target = (Monster) World.activeMonsters().get(0);
             target.getHurt(2);
             System.out.println("You deal 2 damage.");
         }
@@ -217,17 +219,16 @@ public class Player {
         return destination;
     }
 
-    private void go(Room targetRoom) {
+    public void go(Room targetRoom) {
         currentRoom = targetRoom;
         System.out.println("You enter the room.");
         targetRoom.getEntered();
-        System.out.println("There are " + currentRoom.monsters.size() + " monsters here.");
         //TODO: Add code to generate room contents.
     }
 
     private void look() {
         System.out.println("There are " + currentRoom.monsters.size() + " monsters here.");
-        if (currentRoom.equals(World.firstRoom)) {
+        if (currentRoom.equals(World.getFirstRoom())) {
             System.out.println("There are " + (currentRoom.adjRooms.length - 1) + " exits here.");
         } else {
             System.out.println("There are " + currentRoom.adjRooms.length + " exits here.");

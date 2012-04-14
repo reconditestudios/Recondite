@@ -42,9 +42,9 @@ public class Room {
     public void addMonster(String monsterType) {
         Monster monster = null;
         if (monsterType.equals("goblin")) {
-            monster = new Goblin(World.monsters.size(), monsters.size(), this);
+            monster = new Goblin(World.activeMonsters().size(), monsters.size(), this);
         }
-        World.monsters.add(monster);
+        World.activeMonsters().add(monster);
         monsters.add(monster);
     }
 
@@ -59,5 +59,7 @@ public class Room {
             //TODO: Set up contents of room
             enteredByPlayer = true;
         }
+        System.out.println("There are " + World.activeMonsters().size() + " monsters here.");
+        System.out.println("There are " + World.player.currentRoom.adjRooms.length + " exits here.");
     }
 }
