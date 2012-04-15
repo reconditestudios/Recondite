@@ -18,10 +18,10 @@ public class World {
     public static Player player;
 
     public World() {
-        floors.add(new Floor());
-        player = new Player(getFirstRoom());
-        getFirstRoom().addMonster("goblin");
-        player.go(getFirstRoom());
+        floors.add(new Floor(null));
+        player = new Player(firstRoom());
+        firstRoom().addMonster("goblin");
+        player.go(firstRoom());
     }
 
     public static void enemyTurn() {
@@ -39,7 +39,11 @@ public class World {
         return player.currentFloor.monsters;
     }
     
-    public static Room getFirstRoom() {
-        return ((Floor) floors.get(0)).firstRoom;
+    public static Room firstRoom() {
+        return ((Floor) floors.get(0)).upLadderRoom;
+    }
+    
+    public static Floor lowestFloor() {
+        return (Floor) floors.get(floors.size() - 1);
     }
 }

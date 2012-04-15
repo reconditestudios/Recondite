@@ -23,12 +23,15 @@ public class Reconditty {
     }
 
     public void start() {
+        System.out.println("You descend into the dungeon.\n");
+        
         gameRunning = true;
         world = new World();
         playerAlive = true;
+        
         while (playerAlive && gameRunning) {
             World.player.turn();    //run player's turn
-            World.enemyTurn();      //for each enemy, run their turn
+            World.enemyTurn();      //run each enemy's turn
             System.out.println(""); //for spacing
         }
     }

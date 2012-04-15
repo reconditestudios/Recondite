@@ -116,7 +116,7 @@ public class Player {
             restartTurn = true;
             turn();
         } else if (command.equals("quit")) {
-            Reconditty.gameRunning = false;
+            quit();
         }
     }
 
@@ -161,8 +161,8 @@ public class Player {
     private void castSpell() {
         if (currentMana >= 2) {
             Monster target = (Monster) World.activeMonsters().get(0);
-            target.getHurt(2);
             System.out.println("You deal 2 damage.");
+            target.getHurt(2);
         }
     }
 
@@ -189,49 +189,77 @@ public class Player {
         Reconditty.playerAlive = false;
     }
 
-    /* Requests an exit number from the player.
-     * If the number is too big, reminds player of the number of exits.
-     * Else sends the player through the target exit.
+    /* Manages movement between rooms.
+     * Lol, don't worry about it.
      */
     private void goHandler() {
-        int destination = getGo();
-
-        try {
-            go(currentRoom.adjRooms[destination - 1]);
-        } catch (NullPointerException ex) {
-            System.out.println("There are only " + currentRoom.adjRooms.length + " exits.");
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            System.out.println("There are only " + currentRoom.adjRooms.length + " exits.");
-            restartTurn = true;
-            turn();
-        }
-    }
-
-    private int getGo() {
         System.out.println("To which room?");
+        boolean movementIsVertical = false;
         int destination = 9001;
+        String input = "";
         try {
-            destination = Integer.parseInt(reader.readLine());
+            input = reader.readLine();
+            destination = Integer.parseInt(input);
         } catch (IOException ex) {
             Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
             destination = 0;
+        } catch (NumberFormatException ex) {
+            movementIsVertical = true;
+            if (input.equals("down")) {
+                if (currentRoom.hasDownLadder) {
+                    go(currentRoom.roomBelow);
+                } else {
+                    System.out.println("There is no down ladder here.");
+                    restartTurn = true;
+                    turn();
+                }
+            } else if (input.equals("up")) {
+                if (currentRoom.hasUpLadder) {
+                    if (currentRoom.equals(World.firstRoom())) {
+                        quit();
+                    } else {
+                        go(currentRoom.roomAbove);
+                    }
+                } else {
+                    System.out.println("There is no up ladder here.");
+                }
+            } else {
+                System.out.println("Use numbers, asshole.");
+                restartTurn = true;
+                turn();
+            }
         }
-        return destination;
+
+        if (!movementIsVertical) {
+            try {
+                go(currentRoom.adjRooms[destination - 1]);
+            } catch (NullPointerException ex) {
+                System.out.println("There are only " + currentRoom.adjRooms.length + " exits.");
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                System.out.println("There are only " + currentRoom.adjRooms.length + " exits.");
+                restartTurn = true;
+                turn();
+            }
+        }
     }
 
     public void go(Room targetRoom) {
         currentRoom = targetRoom;
         System.out.println("You enter the room.");
         targetRoom.getEntered();
-        //TODO: Add code to generate room contents.
     }
 
     private void look() {
         System.out.println("There are " + currentRoom.monsters.size() + " monsters here.");
-        if (currentRoom.equals(World.getFirstRoom())) {
+        if (currentRoom.equals(World.firstRoom())) {
             System.out.println("There are " + (currentRoom.adjRooms.length - 1) + " exits here.");
         } else {
             System.out.println("There are " + currentRoom.adjRooms.length + " exits here.");
         }
+    }
+
+    private void quit() {
+        Reconditty.gameRunning = false;
+        //TODO: Add code to save game.
     }
 }

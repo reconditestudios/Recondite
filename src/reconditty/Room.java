@@ -15,11 +15,21 @@ import actors.*;
 public class Room {
 
     public ArrayList monsters = new ArrayList();
-    private Random random = new Random();
     public Room[] adjRooms;
+    public Room roomAbove;
+    public Room roomBelow;
+    private Random random = new Random();
     public boolean enteredByPlayer;
+    public boolean hasDownLadder;
+    public boolean hasUpLadder;
 
     public Room(Room parentRoom, boolean isFirstRoom) {
+        int chance = random.nextInt(10);
+        if (!isFirstRoom) {
+            hasDownLadder = true;
+            World.floors.add(new Floor(this));
+            roomBelow = (World.lowestFloor()).upLadderRoom;
+        }
         //Decide how many adjacent rooms there are (1 to 3)
         int exits;
         if (isFirstRoom) {
@@ -56,10 +66,16 @@ public class Room {
             System.out.println("This room looks familiar.");
         } else {
             this.genAdjRooms();
-            //TODO: Set up contents of room
+            //TODO: Add code to generate room contents.
             enteredByPlayer = true;
         }
-        System.out.println("There are " + World.activeMonsters().size() + " monsters here.");
+        System.out.println("There are " + monsters.size() + " monsters here.");
         System.out.println("There are " + World.player.currentRoom.adjRooms.length + " exits here.");
+        if (hasDownLadder) {
+            System.out.println("The ladder down is here.");
+        }
+        if (hasUpLadder) {
+            System.out.println("The ladder up is here.");
+        }
     }
 }
